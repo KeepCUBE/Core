@@ -1,5 +1,7 @@
-import serial
+# import serial
 from threading import Thread
+
+
 
 from config import INTERFACES as config
 
