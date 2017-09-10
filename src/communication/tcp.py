@@ -1,6 +1,7 @@
 from twisted.internet import reactor, protocol
 from twisted.protocols.basic import LineReceiver
 
+from signal import signal, SIGINT, SIGTERM
 from threading import Thread
 from time import sleep, time
 import random
@@ -11,9 +12,12 @@ logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
 
 class System(Thread):
+	kill = False
 
 	def __init__(self):
 		Thread.__init__(self)
+		signal(SIGTERM, self.exit)
+		signal(SIGINT, self.exit)
 		self.start()
 
 	start_time = datetime.now()
@@ -24,14 +28,19 @@ class System(Thread):
 		ms = (dt.days * 24 * 60 * 60 + dt.seconds) * 1000 + dt.microseconds / 1000.0
 		return ms
 
+	def exit(self, signum, frame):
+		self.kill = True
+
 	def run(self):
-		while 1:
+		while 1 and not self.kill:
 			message = input('Message?')
 			if random.choice([True, True]):
 				reactor.callFromThread(Server.broadcast, message)
 			else:
 				reactor.callFromThread(Server.broadcast, "E_ON")
 			# sleep(1)
+
+		reactor.stop()
 
 
 class Server(LineReceiver):
