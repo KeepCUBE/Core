@@ -8,7 +8,7 @@ class Client(LineOnlyReceiver):
 
 	def connectionMade(self):
 		payload = {
-			"method": "test.test",
+			"method": "test.ifs.test",
 			"params": ["echome!"],
 			"jsonrpc": "2.0",
 			"id": 0,
