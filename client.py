@@ -1,12 +1,19 @@
 from twisted.internet import reactor, protocol
 from twisted.protocols.basic import LineOnlyReceiver
 
+import json
 
 class Client(LineOnlyReceiver):
 	"""Once connected, send a message, then print the result."""
 
 	def connectionMade(self):
-		self.transport.write(b"hello, world!")
+		payload = {
+			"method": "test.test",
+			"params": ["echome!"],
+			"jsonrpc": "2.0",
+			"id": 0,
+		}
+		self.transport.write(bytes(json.dumps(payload), 'utf-8'))
 
 	# def dataReceived(self, line):
 	# 	print(line)

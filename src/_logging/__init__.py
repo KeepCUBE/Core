@@ -4,5 +4,6 @@ logging.basicConfig(level=logging.DEBUG, format="%(message)s")
 
 
 class Log:
-	def debug(self, message):
+	@staticmethod
+	def debug(message):
 		logging.debug(message)
