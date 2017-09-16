@@ -9,7 +9,7 @@ from threading import Thread
 class Interfaces:
 	"""docstring for Interface"""
 
-	def __init__(self, config):
+	def __init__(self):
 		print('IF: construct')
 		# self._baud = config['SERIAL']['baud']
 		# self._ser_port = config['SERIAL']['port']
@@ -23,16 +23,25 @@ class Interfaces:
 
 	def init(self):
 		print('IF: init')
-		self._ser_conn = Serial(self._ser_port,self._baud)
+		self._ser_conn = Serial(self._ser_port, self._baud)
 		self.nrf = NRF(self._ser_conn)
+		self.ism = ISM(self._ser_conn)
 
 
 class NRF:
 	def __init__(self, serial):
 		self.serial = serial
 
+	def send(self, data, id):
+		print("NRF" + id + "#" + data)
+
+
+class ISM:
+	def __init__(self, serial):
+		self.serial = serial
+
 	def send(self, data):
-		print(data)
+		print("ISM#" + data)
 
 
 class Serial:
@@ -44,7 +53,8 @@ class Serial:
 		ser = serial.Serial(port=com, baudrate=baud, timeout=2)
 		if ser.isOpen(): ser.close()
 		ser.open()
-		# Thread(target = self.listen).start()
+
+	# Thread(target = self.listen).start()
 
 	def listen(self):
 		print("serial: listen")
@@ -63,4 +73,4 @@ class Serial:
 
 ifaces = Interfaces()
 ifaces.init()
-ifaces.nrfs.send("ahoj")
+ifaces.nrf.send("ahoj")
