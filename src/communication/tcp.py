@@ -7,8 +7,22 @@ from time import sleep, time
 import random
 from datetime import datetime
 
+from jsonrpc import JSONRPCResponseManager, dispatcher
+import json
+
 import logging
 logging.basicConfig(level=logging.DEBUG, format="%(message)s")
+
+
+@dispatcher.add_method
+def test(echo):
+	return 'jsonrpc: %s' % echo
+
+
+@dispatcher.add_class
+class Test:
+	def test(self, echo):
+		return 'class jsonrpc: %s' % echo
 
 
 class System(Thread):
@@ -60,10 +74,12 @@ class Server(LineReceiver):
 		# self.send('Hello')
 
 	def lineReceived(self, line):
-		print('line: ', line)
+		pass
 
 	def dataReceived(self, data):
-		print(data.decode('utf-8'))
+		response = JSONRPCResponseManager.handle(data, dispatcher)
+		print(response.json)
+		# print(data.decode('utf-8'))
 
 	def send(self, data):
 		if data is not None and isinstance(data, str):

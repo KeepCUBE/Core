@@ -1,14 +1,15 @@
-# import serial
+try:
+	import serial
+except ImportError:
+	from mock import serial
+
 from threading import Thread
 
-
-
-from config import INTERFACES as config
 
 class Interfaces:
 	"""docstring for Interface"""
 
-	def __init__(self):
+	def __init__(self, config):
 		print('IF: construct')
 		self._baud = config['SERIAL']['baud']
 		self._ser_port = config['SERIAL']['port']
@@ -20,7 +21,7 @@ class Interfaces:
 
 	def init(self):
 		print('IF: init')
-		self._ser_conn = self.Serial(self._ser_port,self._baud)
+		self._ser_conn = self.Serial(self._ser_port, self._baud)
 
 	class Serial:
 		ser = None
@@ -29,7 +30,8 @@ class Interfaces:
 			print('serial: construct')
 			global ser
 			ser = serial.Serial(port=com, baudrate=baud, timeout=2)
-			if ser.isOpen(): ser.close()
+			if ser.isOpen():
+				ser.close()
 			ser.open()
 			#Thread(target = self.listen).start()
 
